@@ -12,13 +12,14 @@ import java.util.Iterator;
  * connected to other rooms via exits.  For each existing exit, the room 
  * stores a reference to the neighboring room.
  * 
- * @author  Michael Kölling and David J. Barnes
- * @version 2016.02.29
+ * @author  Henry Petrillo
+ * @version 2024.11.19
  */
 
 public class Room 
 {
     private String description;
+    private ArrayList<Item> items;
     private HashMap<String, Room> exits;        // stores exits of this room.
 
     /**
@@ -30,7 +31,8 @@ public class Room
     public Room(String description) 
     {
         this.description = description;
-        exits = new HashMap<>();
+        this.items = new ArrayList<>();
+        this.exits = new HashMap<>();
     }
 
     /**
@@ -58,9 +60,41 @@ public class Room
      *     Exits: north west
      * @return A long description of this room
      */
-    public String getLongDescription()
-    {
-        return "You are " + description + ".\n" + getExitString();
+    public String getLongDescription() {
+        StringBuilder sb = new StringBuilder("You are " + description + ".\nExits:");
+        for (String exit : exits.keySet()) {
+            sb.append(" " + exit);
+        }
+        sb.append("\nItems here: ");
+        for (Item item : items) {
+            sb.append(item.getName() + " ");
+        }
+        return sb.toString();
+    }
+
+    /**
+     * Adds an item to the room.
+     * 
+     * @param item The item to add.
+     */
+    public void addItem(Item item) {
+        items.add(item);
+    }
+
+    /**
+     * Removes an item from the room.
+     * 
+     * @param item The item to remove.
+     * @return The removed item, or null if not found.
+     */
+    public Item removeItem(String itemName) {
+        for (Item item : items) {
+            if (item.getName().equalsIgnoreCase(itemName)) {
+                items.remove(item);
+                return item;
+            }
+        }
+        return null;
     }
 
     /**
